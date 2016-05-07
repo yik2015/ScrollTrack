@@ -35,16 +35,16 @@ public class TopTrackListener extends RecyclerView.OnScrollListener {
                 final float transY = mTargetView.getTranslationY();
                 int distance = -mTargetView.getBottom();
 
-                Log.d(TAG, "transY == " + transY + ", distance == "
-                        + distance + ", mLastDy == " + mLastDy);
+//                Log.d(TAG, "transY == " + transY + ", distance == "
+//                        + distance + ", mLastDy == " + mLastDy);
 
                 // transY == 0, hided. transY == distance, showed.
                 if (transY == 0 || transY == distance) {
                     return;
                 }
 
-                // scroll down, dy > 0, need to hide.
-                // scroll up, dy < 0, need to show.
+                // scroll down(fingers up), dy > 0, need to hide.
+                // scroll up(fingers down), dy < 0, need to show.
                 if (mLastDy > 0) {
                     mAnimator = animateHide(mTargetView);
                 } else {
@@ -74,10 +74,10 @@ public class TopTrackListener extends RecyclerView.OnScrollListener {
 
         int distance = -mTargetView.getBottom();
 
-//        Log.d(TAG, "dx == " + dx + ", dy == " + dy + ", mTotalDy == " + mTotalDy +
-//                ", distance ==" + distance+", transY == " +transY);
+        Log.d(TAG, "dx == " + dx + ", dy == " + dy + ", mTotalDy == " + mTotalDy +
+                ", distance ==" + distance + ", transY == " + transY);
 
-        if (mTotalDy >= distance / 8 && dy > 0) return;
+        if (mTotalDy >= distance && dy > 0) return;
         if (isAlreadyHide && dy > 0) return;
         if (isAlreadyShow && dy < 0) return;
 
@@ -90,6 +90,8 @@ public class TopTrackListener extends RecyclerView.OnScrollListener {
         mTargetView.setTranslationY(newTransY);
         isAlreadyHide = newTransY == distance;
         isAlreadyShow = newTransY == 0;
+
+        Log.d(TAG, "------- onScrolled ---------");
     }
 
     private ObjectAnimator animateHide(View targetView) {
@@ -103,6 +105,7 @@ public class TopTrackListener extends RecyclerView.OnScrollListener {
 
     private ObjectAnimator animationFromTo(View view, float start, float end) {
         String propertyName = "translationY";
+        Log.d(TAG, "animate, start == " + start + ", end == " + end);
         ObjectAnimator animator = ObjectAnimator.ofFloat(view, propertyName,
                 start, end);
         animator.start();
